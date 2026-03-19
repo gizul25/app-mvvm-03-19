@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace AvaloniaAppTemplate.ViewModels;
+namespace MyAvaloniaApp.ViewModels;
 
 public abstract class ViewModelBase : ObservableObject
 {

@@ -1,7 +1,7 @@
 ﻿using Avalonia;
 using System;
 
-namespace AvaloniaAppTemplate;
+namespace MyAvaloniaApp;
 
 sealed class Program
 {
@@ -17,10 +17,5 @@ sealed class Program
         => AppBuilder.Configure<App>()
             .UsePlatformDetect()
             .WithInterFont()
-#if (ReactiveUIToolkitChosen)
-            .LogToTrace()
-            .UseReactiveUI();
-#else
             .LogToTrace();
-#endif
 }

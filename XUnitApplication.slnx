@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="Application/MyAvaloniaApp.csproj" />
+  <Project Path="Test/Test.csproj" />
+</Solution>
