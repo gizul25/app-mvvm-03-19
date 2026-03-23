@@ -62,9 +62,3 @@ public class Auth
         return Convert.ToBase64String(hashBytes);
     }
 }
-
-public struct HashingResult
-{
-    public string HashedPassword;
-    public byte[] Salt;
-}
