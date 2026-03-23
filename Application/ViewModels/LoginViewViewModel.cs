@@ -1,0 +1,36 @@
+﻿using System;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using Avalonia.Controls;
+using Avalonia.Interactivity;
+using Avalonia.Media;
+using MyAvaloniaApp;
+using MyAvaloniaApp.Domain;
+using MyAvaloniaApp.Models;
+
+namespace MyAvaloniaApp.ViewModels;
+
+public partial class LoginViewViewModel : ViewModelBase
+{
+    [ObservableProperty]
+    private string _username = "";
+
+    [ObservableProperty]
+    private string _password = "";
+
+    [ObservableProperty]
+    private string _statusMessage = "";
+
+    [RelayCommand]
+    private void Login()
+    {
+        User? user = Auth.Login(App.Db!, Username, Password);
+        if (user == null)
+        {
+            StatusMessage = "Invalid user";
+            return;
+        }
+        App.CurrentUser = user;
+        StatusMessage = "";
+    }
+}

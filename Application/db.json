@@ -1,0 +1,9 @@
+{
+  "users": [
+    {
+      "username": "alex",
+      "role": "librarian",
+      "password_hash": "123123"
+    }
+  ]
+}
