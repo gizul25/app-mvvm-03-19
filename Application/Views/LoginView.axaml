@@ -7,9 +7,10 @@
              x:DataType="vm:LoginViewViewModel"
              x:Class="MyAvaloniaApp.Views.LoginView">
     <StackPanel Margin= "10">
-        <TextBlock Margin="12" Text="{Binding StatusMessage}"/>
+        <TextBlock Name="StatusText" Margin="12" Text="{Binding StatusMessage}"/>
         <TextBox Name="UsernameInput" Text="{Binding Username, Mode=TwoWay}" Watermark="Username" />
         <TextBox Name="PasswordInput" Text="{Binding Password, Mode=TwoWay}" Watermark="Password" />
         <Button Name="LoginBtn" Content="Login" Command="{Binding LoginCommand}" Classes="accent" />
+        <Button Name="GenerateBtn" Content="Generate" Command="{Binding GenerateCommand}" Classes="accent" />
     </StackPanel>
 </UserControl>

@@ -16,14 +16,25 @@ public partial class App : Application
 {
     public static Database? Db;
     public static User? CurrentUser;
-    JSONPersistence? persistence;
+    static JSONPersistence? persistence;
 
     public override void Initialize()
     {
-        persistence = new JSONPersistence("db.json");
-        Db = persistence.Load<Database>();
+        InitDb();
         
         AvaloniaXamlLoader.Load(this);
+    }
+
+    public void InitDb()
+    {
+        persistence = new JSONPersistence("db.json");
+        Db = persistence.Load<Database>();
+    }
+
+    public static void SaveDatabase()
+    {
+        Console.WriteLine("Saving database...");
+        persistence!.Save(Db);
     }
 
     public override void OnFrameworkInitializationCompleted()
@@ -47,7 +58,7 @@ public partial class App : Application
     private void OnShutdownRequested(object? sender, ShutdownRequestedEventArgs e)
     {
         Console.WriteLine("Shutting down...");
-        persistence!.Save(Db);
+        SaveDatabase();
     }
 
     private void DisableAvaloniaDataAnnotationValidation()

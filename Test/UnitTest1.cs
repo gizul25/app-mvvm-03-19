@@ -3,35 +3,18 @@ using Avalonia.Controls;
 using Avalonia.Headless;
 using Avalonia.Headless.XUnit;
 using Avalonia.Input;
+using System.Diagnostics;
+using MyAvaloniaApp;
 using MyAvaloniaApp.ViewModels;
+using MyAvaloniaApp.Models;
 using MyAvaloniaApp.Views;
+using MyAvaloniaApp.Domain;
 using Xunit;
 
 namespace TestableApp.Headless.XUnit;
 
 public class UnitTest1
 {
-    [AvaloniaFact]
-    public void Window_WelcomeText()
-    {
-        // Create a window and set the view model as its data context:
-        var window = new MainWindow
-        {
-            DataContext = new MainWindowViewModel()
-        };
-
-        // Show the window, as it's required to get layout processed:
-        window.Show();
-        window.FirstOperandInput.Focus();
-        var firstOperandInput = window.FindControl<TextBox>("FirstOperandInput");
-        Assert.Equal("0", firstOperandInput.Text);
-
-        // MainWindowViewModel ctx = (MainWindowViewModel)window.DataContext;
-
-
-        // Assert.Equal("Welcome to Avalonia!", ctx.Greeting);
-    }
-
     [AvaloniaFact]
     public void Avalonia_TestWorking()
     {
@@ -52,29 +35,82 @@ public class UnitTest1
         Assert.Equal("Hello World", textBox.Text);
     }
 
-    [Fact]
-    public void Add_AddsTwoNumbers()
+    [AvaloniaFact]
+    public void LoginView_LoginInvalid()
     {
-        MainWindowViewModel viewModel = new();
-        
-        viewModel.FirstOperand = 1;
-        viewModel.SecondOperand = 1;
+        LoginViewViewModel viewModel = new();
+        LoginView page = new LoginView
+        {
+            DataContext = viewModel
+        };
 
-        viewModel.AddCommand.Execute(null);
+        Window window = new Window
+        {
+            Content = page
+        };
+        window.Show();
 
-        Assert.Equal(2, viewModel.Result);
+        Database db = new();
+        string passwordHash = Auth.GenerateHashAndSalt("123123");
+        User user = new()
+        {
+            Username = "alex",
+            Role = "librarian",
+            PasswordHash = passwordHash,
+        };
+        db.Users.Add(user);
+        App.Db = db;
+
+        TextBox usernameInput = page.UsernameInput;
+        usernameInput.Text = "asdasd";
+        TextBox passwordInput = page.PasswordInput;
+        passwordInput.Text = "asdasd";
+
+        Button loginBtn = page.LoginBtn;
+        loginBtn.Focus();
+        window.KeyReleaseQwerty(PhysicalKey.Space, RawInputModifiers.None);
+
+        TextBlock statusText = page.StatusText;
+        Assert.Equal("Invalid user", statusText.Text);
     }
 
-    [Fact]
-    public void Add_MultiplyTwoNumbers()
+    [AvaloniaFact]
+    public void LoginView_LoginValid()
     {
-        MainWindowViewModel viewModel = new();
+        LoginViewViewModel viewModel = new();
+        LoginView page = new LoginView
+        {
+            DataContext = viewModel
+        };
+
+        Window window = new Window
+        {
+            Content = page
+        };
+        window.Show();
+
+        Database db = new();
+        string passwordHash = Auth.GenerateHashAndSalt("123123");
+        User user = new()
+        {
+            Username = "alex",
+            Role = "librarian",
+            PasswordHash = passwordHash,
+        };
+        db.Users.Add(user);
         
-        viewModel.FirstOperand = 2;
-        viewModel.SecondOperand = 3;
+        App.Db = db;
 
-        viewModel.MultiplyCommand.Execute(null);
+        TextBox usernameInput = page.UsernameInput;
+        usernameInput.Text = "alex";
+        TextBox passwordInput = page.PasswordInput;
+        passwordInput.Text = "123123";
 
-        Assert.Equal(6, viewModel.Result);
+        Button loginBtn = page.LoginBtn;
+        loginBtn.Focus();
+        window.KeyReleaseQwerty(PhysicalKey.Space, RawInputModifiers.None);
+
+        TextBlock statusText = page.StatusText;
+        Assert.Equal("", statusText.Text);
     }
 }
