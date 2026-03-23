@@ -37,17 +37,6 @@ public partial class LoginViewViewModel : ViewModelBase
     [RelayCommand]
     private void Generate()
     {
-        Database db = new();
-        string passwordHash = Auth.GenerateHashAndSalt("123123");
-        User user = new()
-        {
-            Username = "alex",
-            Role = "librarian",
-            PasswordHash = passwordHash,
-        };
-        db.Users.Add(user);
-
-        App.Db = db;
-        App.SaveDatabase();
+        Generator.CreateFreshDatabase();
     }
 }

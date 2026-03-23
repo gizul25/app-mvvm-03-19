@@ -3,7 +3,35 @@
     {
       "username": "alex",
       "role": "librarian",
-      "password_hash": "8AlTT9bqnACwaUx8namcBmocS9Wgo/aqH4VLfQ8qkZE="
+      "password_hash": "SUM/903/SdbEdcTFlto155VbJOyb6bWo8qFEXRtNZnQ="
+    },
+    {
+      "username": "steve",
+      "role": "member",
+      "password_hash": "pfCVT0eMG/oVDHU7JNuCINJKB/kU3EZAfneqISvfv1E="
+    }
+  ],
+  "books": [
+    {
+      "isbn": "0575082445",
+      "title": "The Last Wish",
+      "author": "Andrzej Sapkowski",
+      "description": "Geralt is a witcher, a man whose magic powers, enhanced by long training and a mysterious elixir, have made him a brilliant fighter and a merciless assassin. Yet he is no ordinary murderer: his targets are the multifarious monsters and vile fiends that ravage the land and attack the innocent. He roams the country seeking assignments, but gradually comes to realise that while some of his quarry are unremittingly vile, vicious grotesques, others are the victims of sin, evil or simple naivety. One reviewer said: \u0027This book is a sheer delight. It is beautifully written, full of vitality and endlessly inventive: its format, with half a dozen episodes and intervening rest periods for both the hero and the reader, allows for a huge range of characters, scenarios and action. It\u0027s thought-provoking without being in the least dogmatic, witty without descending to farce and packed with sword fights without being derivative. The dialogue sparkles; characters morph almost imperceptibly from semi-cliche to completely original; nothing is as it first seems. Sapkowski succeeds in seamlessly welding familiar ideas, unique settings and delicious twists of originality: his Beauty wants to rip the throat out of a sensitive Beast; his Snow White seeks vengeance on all and sundry, his elves are embittered and vindictive. It\u0027s easily one of the best things I\u0027ve read in ages.\u0027. The book has been read, but is in excellent condition. Pages are intact and not marred by notes or highlighting. The spine remains undamaged. ",
+      "borrower": null
+    },
+    {
+      "isbn": "1473211549",
+      "title": "Sword of Destiny",
+      "author": "Andrzej Sapkowski",
+      "description": "Most items will be dispatched the same or the next working day. A copy that has been read but remains in clean condition. All of the pages are intact and the cover is intact and the spine may show signs of wear. The book may have minor markings which are not specifically mentioned.",
+      "borrower": null
+    },
+    {
+      "isbn": "1399611402",
+      "title": "Blood of Elves",
+      "author": "Andrzej Sapkowski",
+      "description": "The Witcher, Geralt of Rivia, holds the fate of the world in his hands.",
+      "borrower": null
     }
   ]
 }
