@@ -4,7 +4,7 @@ namespace MyAvaloniaApp.Domain;
 
 public class Generator
 {
-    public static void CreateFreshDatabase()
+    public static Database CreateFreshDatabase()
     {
         Database db = new();
         User user = new()
@@ -50,7 +50,6 @@ public class Generator
         };
         db.Books.Add(book3);
 
-        App.Db = db;
-        App.SaveDatabase();
+        return db;
     }
 }

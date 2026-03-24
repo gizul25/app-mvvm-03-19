@@ -1,16 +1,11 @@
-﻿using System;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Avalonia.Controls;
-using Avalonia.Interactivity;
-using Avalonia.Media;
-using MyAvaloniaApp;
 using MyAvaloniaApp.Domain;
 using MyAvaloniaApp.Models;
 
 namespace MyAvaloniaApp.ViewModels;
 
-public partial class LoginViewViewModel : ViewModelBase
+public partial class LoginViewModel : ViewModelBase
 {
     [ObservableProperty]
     private string _username = "";
@@ -32,11 +27,6 @@ public partial class LoginViewViewModel : ViewModelBase
         }
         App.CurrentUser = user;
         StatusMessage = "";
-    }
-
-    [RelayCommand]
-    private void Generate()
-    {
-        Generator.CreateFreshDatabase();
+        App.ChangePageTo((user.Role == "member") ? new CatalogViewModel() : new LibrarienCatalogViewModel());
     }
 }

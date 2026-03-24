@@ -4,13 +4,46 @@
              xmlns:vm="using:MyAvaloniaApp.ViewModels"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:DataType="vm:LoginViewViewModel"
+             x:DataType="vm:LoginViewModel"
              x:Class="MyAvaloniaApp.Views.LoginView">
-    <StackPanel Margin= "10">
-        <TextBlock Name="StatusText" Margin="12" Text="{Binding StatusMessage}"/>
-        <TextBox Name="UsernameInput" Text="{Binding Username, Mode=TwoWay}" Watermark="Username" />
-        <TextBox Name="PasswordInput" Text="{Binding Password, Mode=TwoWay}" Watermark="Password" />
-        <Button Name="LoginBtn" Content="Login" Command="{Binding LoginCommand}" Classes="accent" />
-        <Button Name="GenerateBtn" Content="Generate" Command="{Binding GenerateCommand}" Classes="accent" />
+    
+    
+    <StackPanel HorizontalAlignment="Center"
+                VerticalAlignment="Center">
+       <TextBlock Name="StatusText" 
+                  Margin="12" 
+                  Foreground="Red"
+                  Text="{Binding StatusMessage}" />
+        <Border BorderBrush="White" 
+                BorderThickness="1" 
+                CornerRadius="0"
+                Padding="5">
+            <StackPanel Spacing="5">
+                <TextBox Name="UsernameInput" 
+                        Text="{Binding Username, Mode=TwoWay}" 
+                        Watermark="Username" 
+                        BorderBrush="White" 
+                        BorderThickness="1" 
+                        CornerRadius="0" 
+                        Width="200"/>
+                <TextBox Name="PasswordInput" 
+                        Text="{Binding Password, Mode=TwoWay}" 
+                        Watermark="Password" 
+                        PasswordChar="*"
+                        BorderBrush="White" 
+                        BorderThickness="1" 
+                        CornerRadius="0" 
+                        Width="200"/>
+                <Button Name="LoginBtn" 
+                        Content="Login" 
+                        Command="{Binding LoginCommand}"
+                        Background="Black"
+                        BorderBrush="White" 
+                        BorderThickness="1" 
+                        CornerRadius="0"
+                        HorizontalAlignment="Center"/>
+            </StackPanel>
+        </Border>
     </StackPanel>
+    
 </UserControl>

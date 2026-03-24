@@ -1,6 +1,5 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Data.Core;
 using Avalonia.Data.Core.Plugins;
 using System;
 using System.Linq;
@@ -9,13 +8,19 @@ using MyAvaloniaApp.ViewModels;
 using MyAvaloniaApp.Views;
 using MyAvaloniaApp.Models;
 using MyAvaloniaApp.Persistence;
+using CommunityToolkit.Mvvm.ComponentModel;
+using System.IO;
+using MyAvaloniaApp.Domain;
 
 namespace MyAvaloniaApp;
 
 public partial class App : Application
 {
-    public static Database? Db;
+    public static event EventHandler<ChangePageArgs>? ChangePage;
+
+    public static Database Db { get; set; } = new();
     public static User? CurrentUser;
+
     static JSONPersistence? persistence;
 
     public override void Initialize()
@@ -25,15 +30,20 @@ public partial class App : Application
         AvaloniaXamlLoader.Load(this);
     }
 
+    public static void ChangePageTo(ObservableObject Page)
+    {
+        ChangePage?.Invoke(null, new(Page));
+    }
+    
+
     public void InitDb()
     {
         persistence = new JSONPersistence("db.json");
-        Db = persistence.Load<Database>();
+        Db = persistence.Load<Database>() ?? Generator.CreateFreshDatabase();
     }
 
     public static void SaveDatabase()
     {
-        Console.WriteLine("Saving database...");
         persistence!.Save(Db);
     }
 
@@ -57,7 +67,6 @@ public partial class App : Application
 
     private void OnShutdownRequested(object? sender, ShutdownRequestedEventArgs e)
     {
-        Console.WriteLine("Shutting down...");
         SaveDatabase();
     }
 
@@ -73,4 +82,9 @@ public partial class App : Application
             BindingPlugins.DataValidators.Remove(plugin);
         }
     }
+}
+
+public class ChangePageArgs(ObservableObject Page)
+{
+    public ObservableObject Page = Page;
 }

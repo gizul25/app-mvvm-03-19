@@ -1,10 +1,11 @@
+using Avalonia;
 using Avalonia.Controls;
 
 namespace MyAvaloniaApp.Views;
 
-public partial class Example : UserControl
+public partial class BookView : UserControl
 {
-    public Example()
+    public BookView()
     {
         InitializeComponent();
     }
