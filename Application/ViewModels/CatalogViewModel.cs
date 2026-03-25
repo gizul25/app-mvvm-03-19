@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using MyAvaloniaApp.Domain;
 using MyAvaloniaApp.Models;
 
 namespace MyAvaloniaApp.ViewModels;
@@ -25,6 +26,26 @@ public partial class CatalogViewModel : ViewModelBase
     [ObservableProperty]
     private int _spaceSize;
 
+    public CatalogViewModel()
+    {
+        SpaceSize = 2;
+        Update();
+    }
+
+    private void Update()
+    {
+        List<Book> books;
+        if (!onlyBorrowed)
+        {
+            books = App.Db.GetBooks();
+        }
+        else
+        {
+            books = Member.GetBorrowedBooksByUsername(App.Db!, App.CurrentUser?.Username!);
+        }
+        BookList = MapBooks(books);
+    }
+
     [RelayCommand]
     private void Logout()
     {
@@ -36,7 +57,7 @@ public partial class CatalogViewModel : ViewModelBase
     private void Borrowed()
     {
         onlyBorrowed = !onlyBorrowed;
-        BookList = Books(App.Db.Books);
+        Update();
     }
 
     [RelayCommand]
@@ -60,42 +81,35 @@ public partial class CatalogViewModel : ViewModelBase
         SpaceSize = 1;
         lastDetailedBook = (int)id;
         ShowBookDetails = true;
+
+        var book = App.Db.GetBookByIndex((int)id);
+        if (book == null)
+        {
+            return;
+        }
+
         BookDisc =
-            $"{App.Db.Books[(int)id].Title}\n" +
-            $"From: {App.Db.Books[(int)id].Author}\n" +
-            $"ISBN: {App.Db.Books[(int)id].ISBN}\n\n" +
-            $"Description: {App.Db.Books[(int)id].Description}\n";
+            $"{book.Title}\n" +
+            $"From: {book.Author}\n" +
+            $"ISBN: {book.ISBN}\n\n" +
+            $"Description: {book.Description}\n";
     }
 
-    public CatalogViewModel()
+    private ObservableCollection<ViewModelBase> MapBooks(List<Book> books)
     {
-        BookList = Books(App.Db.Books);
-        SpaceSize = 2;
-    }
+        ObservableCollection<ViewModelBase> mappedBooks = [];
 
-    private ObservableCollection<ViewModelBase> Books(List<Book> library)
-    {
-        ObservableCollection<ViewModelBase> books = [];
-        if (App.CurrentUser == null)
+        foreach (Book book in books)
         {
-            return books;
+            BookViewModel bookModel = new(book);
+            bookModel.BorrowStateChanged += OnBorrowStateChanged;
+            mappedBooks.Add(bookModel);
         }
-
-        for (int id = 0; id < library.Count; id++)
-        {
-            Book book = library[id];
-            if (!onlyBorrowed || App.CurrentUser.Username == book.Borrower)
-            {
-                BookViewModel bookModel = new(id);
-                bookModel.BorrowStateChanged += Relist;
-                books.Add(bookModel);
-            }
-        }
-        return books;
+        return mappedBooks;
     }
 
-    private void Relist(object? sender, EventArgs e)
+    private void OnBorrowStateChanged(object? sender, EventArgs e)
     {
-        BookList = Books(App.Db.Books);
+        Update();
     }
 }

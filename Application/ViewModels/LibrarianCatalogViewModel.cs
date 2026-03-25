@@ -1,8 +1,10 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using MyAvaloniaApp.Domain;
 using MyAvaloniaApp.Models;
 
 namespace MyAvaloniaApp.ViewModels;
@@ -36,6 +38,26 @@ public partial class LibrarianCatalogViewModel : ViewModelBase
     [ObservableProperty]
     private int _spaceSize;
 
+    public LibrarianCatalogViewModel()
+    {
+        SpaceSize = 2;
+        Update();
+    }
+
+    private void Update()
+    {
+        List<Book> books;
+        if (!onlyBorrowed)
+        {
+            books = App.Db.GetBooks();
+        }
+        else
+        {
+            books = Librarian.GetBorrowedBooks(App.Db!);
+        }
+        BookList = MapBooks(books);
+    }
+
     [RelayCommand]
     private void Logout()
     {
@@ -47,17 +69,21 @@ public partial class LibrarianCatalogViewModel : ViewModelBase
     private void Borrowed()
     {
         onlyBorrowed = !onlyBorrowed;
-        BookList = Books(App.Db.Books);
+        Update();
     }
 
     [RelayCommand]
     private void Remove()
     {
-        App.Db.Books.RemoveAt(lastDetailedBook);
-        BookList = Books(App.Db.Books);
-        ShowBookDetails = false;
-        SpaceSize = 2;
-        lastDetailedBook = -1;
+        var book = App.Db.GetBookByIndex(lastDetailedBook);
+        if (book == null)
+        {
+            return;
+        }
+
+        Librarian.RemoveBook(App.Db!, book);
+        ShowDetails(null);
+        Update();
     }
 
     [RelayCommand]
@@ -72,34 +98,22 @@ public partial class LibrarianCatalogViewModel : ViewModelBase
             Borrower = null,
         };
 
-        App.Db.Books.Add(book);
+        Librarian.AddBook(App.Db!, book);
         ShowDetails(App.Db.Books.Count - 1);
-        BookList = Books(App.Db.Books);
+        Update();
     }
 
     [RelayCommand]
     private void SaveBook()
     {
-        if (lastDetailedBook != -1)
-        {
-            if (AuthorBind != null) App.Db.Books[lastDetailedBook].Author = AuthorBind;
-            if (TitleBind != null) App.Db.Books[lastDetailedBook].Title = TitleBind;
-            if (IsbnBind != null) App.Db.Books[lastDetailedBook].ISBN = IsbnBind;
-            if (BookDisc != null) App.Db.Books[lastDetailedBook].Description = BookDisc;
-        }
-        BookList = Books(App.Db.Books);
+        UpdatePanel();
+        Update();
     }
 
     [RelayCommand]
     public void ShowDetails(int? id)
     {
-        if (lastDetailedBook != -1)
-        {
-            if (AuthorBind != null) App.Db.Books[lastDetailedBook].Author = AuthorBind;
-            if (TitleBind != null) App.Db.Books[lastDetailedBook].Title = TitleBind;
-            if (IsbnBind != null) App.Db.Books[lastDetailedBook].ISBN = IsbnBind;
-            if (BookDisc != null) App.Db.Books[lastDetailedBook].Description = BookDisc;
-        }
+        UpdatePanel();
 
         if (id == null)
         {
@@ -116,39 +130,41 @@ public partial class LibrarianCatalogViewModel : ViewModelBase
             return;
         }
 
-        CanRemove = App.Db.Books[(int)id].Borrower == null;
         SpaceSize = 1;
         lastDetailedBook = (int)id;
         ShowBookDetails = true;
-        TitleBind = $"{App.Db.Books[(int)id].Title}";
-        AuthorBind = $"{App.Db.Books[(int)id].Author}";
-        IsbnBind = $"{App.Db.Books[(int)id].ISBN}";
-        BookDisc = $"{App.Db.Books[(int)id].Description}";
+
+        var book = App.Db.GetBookByIndex((int)id)!;
+        CanRemove = book.Borrower == null;
+        TitleBind = $"{book.Title}";
+        AuthorBind = $"{book.Author}";
+        IsbnBind = $"{book.ISBN}";
+        BookDisc = $"{book.Description}";
     }
 
-    public LibrarianCatalogViewModel()
+    private ObservableCollection<ViewModelBase> MapBooks(List<Book> books)
     {
-        BookList = Books(App.Db.Books);
-        SpaceSize = 2;
+        ObservableCollection<ViewModelBase> mappedBooks = [];
+
+        foreach (Book book in books)
+        {
+            LibrarianBookViewModel bookModel = new(book);
+            mappedBooks.Add(bookModel);
+        }
+        return mappedBooks;
     }
 
-    private ObservableCollection<ViewModelBase> Books(List<Book> library)
+    private void UpdatePanel()
     {
-        ObservableCollection<ViewModelBase> books = [];
-        if (App.CurrentUser == null)
+        var detailedBook = App.Db.GetBookByIndex(lastDetailedBook);
+        if (detailedBook == null)
         {
-            return books;
+            return;
         }
 
-        for (int id = 0; id < library.Count; id++)
-        {
-            Book book = library[id];
-            if (!onlyBorrowed || book.Borrower != null)
-            {
-                LibrarianBookViewModel bookModel = new(id);
-                books.Add(bookModel);
-            }
-        }
-        return books;
+        if (AuthorBind != null) detailedBook.Author = AuthorBind;
+        if (TitleBind != null) detailedBook.Title = TitleBind;
+        if (IsbnBind != null) detailedBook.ISBN = IsbnBind;
+        if (BookDisc != null) detailedBook.Description = BookDisc;
     }
 }

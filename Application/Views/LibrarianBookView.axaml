@@ -15,7 +15,7 @@
         <DockPanel HorizontalAlignment="Stretch">
             <StackPanel Orientation="Horizontal"
                         DockPanel.Dock="Left"
-                        Spacing = "5">
+                        Spacing="5">
                 <TextBlock Foreground="White"
                            Text="{Binding ShortDesc}"
                            VerticalAlignment="Center"/>

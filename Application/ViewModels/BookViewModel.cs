@@ -1,47 +1,64 @@
 ﻿using System;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using MyAvaloniaApp.Domain;
+using MyAvaloniaApp.Models;
 
 namespace MyAvaloniaApp.ViewModels;
 
-public partial class BookViewModel(int id) : ViewModelBase
+public partial class BookViewModel : ViewModelBase
 {
     public event EventHandler? BorrowStateChanged;
 
-    [ObservableProperty]
-    private string? _shortDesc = $"{App.Db.Books[id].Title} | {App.Db.Books[id].Author}";
+    private readonly Book book;
 
     [ObservableProperty]
-    private string? _borrowState = string.IsNullOrEmpty(App.Db.Books[id].Borrower) ? "" : "Borrowed";
+    private string? _shortDesc;
 
     [ObservableProperty]
-    private bool _borrowVisible = (App.CurrentUser == null) || App.Db.Books[id].Borrower == null;
+    private string? _borrowState;
 
     [ObservableProperty]
-    private bool _returnVisible = (App.CurrentUser != null) && App.Db.Books[id].Borrower == App.CurrentUser.Username;
+    private bool _borrowVisible;
+
+    [ObservableProperty]
+    private bool _returnVisible;
+
+    public BookViewModel(Book book)
+    {
+        this.book = book;
+        Update();
+    }
+
+    private void Update()
+    {
+        ShortDesc = $"{book.Title} | {book.Author}";
+        BorrowState = string.IsNullOrEmpty(book.Borrower) ? "" : "Borrowed";
+        BorrowVisible = (App.CurrentUser == null) || book.Borrower == null;
+        ReturnVisible = (App.CurrentUser != null) && book.Borrower == App.CurrentUser.Username;
+    }
 
     [RelayCommand]
     private void Return()
     {
-        ReturnVisible = false;
-        BorrowVisible = true;
+        if (!Member.ReturnBook(App.Db, book.ISBN, App.CurrentUser?.Username!))
+        {
+            return;
+        }
 
-        App.Db.Books[id].Borrower = null;
+        Update();
         BorrowStateChanged?.Invoke(this, new());
     }
 
     [RelayCommand]
     private void Borrow()
     {
-        if (App.CurrentUser == null)
+        if (!Member.BorrowBook(App.Db, book.ISBN, App.CurrentUser?.Username!))
         {
             return;
         }
 
-        BorrowVisible = false;
-        ReturnVisible = true;
-
-        App.Db.Books[id].Borrower = App.CurrentUser.Username;
+        Update();
         BorrowStateChanged?.Invoke(this, new());
     }
 }
