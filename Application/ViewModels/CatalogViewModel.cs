@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using MyAvaloniaApp.Models;
@@ -40,8 +39,6 @@ public partial class CatalogViewModel : ViewModelBase
         BookList = Books(App.Db.Books);
     }
 
-    
-
     [RelayCommand]
     public void ShowDetails(int? id)
     {
@@ -63,10 +60,10 @@ public partial class CatalogViewModel : ViewModelBase
         SpaceSize = 1;
         lastDetailedBook = (int)id;
         ShowBookDetails = true;
-        BookDisc = 
-            $"{App.Db.Books[(int)id].Title}\n"+
-            $"From: {App.Db.Books[(int)id].Author}\n"+
-            $"ISBN: {App.Db.Books[(int)id].ISBN}\n\n"+
+        BookDisc =
+            $"{App.Db.Books[(int)id].Title}\n" +
+            $"From: {App.Db.Books[(int)id].Author}\n" +
+            $"ISBN: {App.Db.Books[(int)id].ISBN}\n\n" +
             $"Description: {App.Db.Books[(int)id].Description}\n";
     }
 
@@ -76,21 +73,23 @@ public partial class CatalogViewModel : ViewModelBase
         SpaceSize = 2;
     }
 
-    private ObservableCollection<ViewModelBase> Books(List<Book> libary)
+    private ObservableCollection<ViewModelBase> Books(List<Book> library)
     {
         ObservableCollection<ViewModelBase> books = [];
-        if(App.CurrentUser == null) return books;
-        for(int id = 0; id < libary.Count; id++)
+        if (App.CurrentUser == null)
         {
-            Book book = libary[id];
-            if(!onlyBorrowed || App.CurrentUser.Username == book.Borrower)
+            return books;
+        }
+
+        for (int id = 0; id < library.Count; id++)
+        {
+            Book book = library[id];
+            if (!onlyBorrowed || App.CurrentUser.Username == book.Borrower)
             {
                 BookViewModel bookModel = new(id);
                 bookModel.BorrowStateChanged += Relist;
                 books.Add(bookModel);
             }
-
-                
         }
         return books;
     }

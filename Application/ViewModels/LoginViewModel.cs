@@ -25,8 +25,9 @@ public partial class LoginViewModel : ViewModelBase
             StatusMessage = "Invalid user";
             return;
         }
+
         App.CurrentUser = user;
         StatusMessage = "";
-        App.ChangePageTo((user.Role == "member") ? new CatalogViewModel() : new LibrarienCatalogViewModel());
+        App.ChangePageTo((user.Role == "member") ? new CatalogViewModel() : new LibrarianCatalogViewModel());
     }
 }

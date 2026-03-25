@@ -18,7 +18,7 @@ public partial class CatalogView : UserControl
 
     private void SelectionChanged(object? sender, RoutedEventArgs e)
     {
-        if(PressedBefore) 
+        if (PressedBefore)
         {
             PressedBefore = false;
             return;
@@ -27,13 +27,12 @@ public partial class CatalogView : UserControl
         if (DataContext is CatalogViewModel viewModel)
         {
             ICommand command = viewModel.ShowDetailsCommand;
-
             if (command.CanExecute(BookList.SelectedIndex))
             {
                 command.Execute(BookList.SelectedIndex);
             }
         }
-        
+
         PressedBefore = true;
         BookList.SelectedItem = null;
     }

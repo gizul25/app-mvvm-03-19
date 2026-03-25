@@ -4,9 +4,9 @@ using Avalonia.Markup.Xaml;
 
 namespace MyAvaloniaApp.Views;
 
-public partial class LibrarienBookView : UserControl
+public partial class LibrarianBookView : UserControl
 {
-    public LibrarienBookView()
+    public LibrarianBookView()
     {
         InitializeComponent();
     }

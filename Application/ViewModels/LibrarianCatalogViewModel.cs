@@ -7,7 +7,7 @@ using MyAvaloniaApp.Models;
 
 namespace MyAvaloniaApp.ViewModels;
 
-public partial class LibrarienCatalogViewModel : ViewModelBase
+public partial class LibrarianCatalogViewModel : ViewModelBase
 {
     private bool onlyBorrowed = false;
     private int lastDetailedBook = -1;
@@ -126,22 +126,26 @@ public partial class LibrarienCatalogViewModel : ViewModelBase
         BookDisc = $"{App.Db.Books[(int)id].Description}";
     }
 
-    public LibrarienCatalogViewModel()
+    public LibrarianCatalogViewModel()
     {
         BookList = Books(App.Db.Books);
         SpaceSize = 2;
     }
 
-    private ObservableCollection<ViewModelBase> Books(List<Book> libary)
+    private ObservableCollection<ViewModelBase> Books(List<Book> library)
     {
         ObservableCollection<ViewModelBase> books = [];
-        if (App.CurrentUser == null) return books;
-        for (int id = 0; id < libary.Count; id++)
+        if (App.CurrentUser == null)
         {
-            Book book = libary[id];
+            return books;
+        }
+
+        for (int id = 0; id < library.Count; id++)
+        {
+            Book book = library[id];
             if (!onlyBorrowed || book.Borrower != null)
             {
-                LibrarienBookViewModel bookModel = new(id);
+                LibrarianBookViewModel bookModel = new(id);
                 books.Add(bookModel);
             }
         }

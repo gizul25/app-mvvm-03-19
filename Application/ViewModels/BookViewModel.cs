@@ -1,7 +1,6 @@
 ﻿using System;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using MyAvaloniaApp.Models;
 
 namespace MyAvaloniaApp.ViewModels;
 
@@ -14,7 +13,7 @@ public partial class BookViewModel(int id) : ViewModelBase
 
     [ObservableProperty]
     private string? _borrowState = string.IsNullOrEmpty(App.Db.Books[id].Borrower) ? "" : "Borrowed";
-    
+
     [ObservableProperty]
     private bool _borrowVisible = (App.CurrentUser == null) || App.Db.Books[id].Borrower == null;
 
@@ -34,11 +33,14 @@ public partial class BookViewModel(int id) : ViewModelBase
     [RelayCommand]
     private void Borrow()
     {
-        if (App.CurrentUser == null) return;
+        if (App.CurrentUser == null)
+        {
+            return;
+        }
 
         BorrowVisible = false;
         ReturnVisible = true;
-        
+
         App.Db.Books[id].Borrower = App.CurrentUser.Username;
         BorrowStateChanged?.Invoke(this, new());
     }
