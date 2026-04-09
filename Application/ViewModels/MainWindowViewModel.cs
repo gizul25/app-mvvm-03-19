@@ -4,48 +4,24 @@ using CommunityToolkit.Mvvm.Input;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Media;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using MyAvaloniaApp.Models;
 
 namespace MyAvaloniaApp.ViewModels;
 
 public partial class MainWindowViewModel : ViewModelBase
 {
-    [ObservableProperty]
-    private int _result = 0;
+    public ObservableCollection<Person> People { get; }
 
-    [ObservableProperty]
-    private int _firstOperand = 0;
-
-    [NotifyCanExecuteChangedFor(nameof(DivideCommand))]
-    [ObservableProperty]
-    private int _secondOperand = 0;
-
-
-    [RelayCommand]
-    private void Add()
+    public MainWindowViewModel()
     {
-        Result = FirstOperand + SecondOperand;
-    }
-
-    [RelayCommand]
-    private void Substract()
-    {
-        Result = FirstOperand - SecondOperand;
-    }
-
-    [RelayCommand]
-    private void Multiply()
-    {
-        Result = FirstOperand * SecondOperand;
-    }
-
-    [RelayCommand(CanExecute = nameof(CanDivide))]
-    private void Divide()
-    {
-        Result = FirstOperand / SecondOperand;
-    }
-
-    private bool CanDivide()
-    {
-        return SecondOperand != 0;
+        var people = new List<Person> 
+        {
+            new Person("Neil", "Armstrong"),
+            new Person("Buzz", "Lightyear"),
+            new Person("James", "Kirk")
+        };
+        People = new ObservableCollection<Person>(people);
     }
 }
